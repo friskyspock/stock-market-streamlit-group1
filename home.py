@@ -25,8 +25,8 @@ def main():
         st.session_state['tickerSymbol'] = option
         st.session_state['data'] = download_data(option)
 
-    if st.checkbox('Show dataframe'):
-        st.write(download_data.head())
+        if st.checkbox('Show dataframe'):
+            st.write(download_data(option).head())
 
 if __name__ == '__main__':
     main()
