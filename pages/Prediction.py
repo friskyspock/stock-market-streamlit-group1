@@ -16,24 +16,18 @@ def build_model(data):
 
 def main():
     st.markdown("# Page 2 ")
-    st.sidebar.markdown("# Page 2 ")
 
-    st.write(st.session_state['tickerName'])
+    st.write(st.session_state['tickerSymbol'])
     raw_data = st.session_state['data']
+    st.write(raw_data.head())
 
     n_steps = st.number_input('No. of days to predict')
 
     if st.button('train model'):
-        model = build_model()
-        future = model.make_future_dataframe(periods=n_steps)
+        model = build_model(raw_data)
+        future = model.make_future_dataframe(periods=int(n_steps))
         forecast = model.predict(future)
 
-        fig = go.Figure(data=[go.Candlestick(x=raw_data.index,
-                                     close=raw_data['Close'],
-                                     open=raw_data['Open'],
-                                     high=raw_data['High'],
-                                     low=raw_data['Low'])])
-        fig.update_layout(xaxis_rangeslider_visible=False)
         st.plotly_chart(fig)
 
 

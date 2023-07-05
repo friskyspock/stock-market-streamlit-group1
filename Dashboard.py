@@ -27,6 +27,16 @@ def main():
 
         if st.checkbox('Show dataframe'):
             st.write(download_data(option).head())
+    
+    raw_data = download_data(option)
+
+    fig = go.Figure(data=[go.Candlestick(x=raw_data.index,
+                                     close=raw_data['Close'],
+                                     open=raw_data['Open'],
+                                     high=raw_data['High'],
+                                     low=raw_data['Low'])])
+    fig.update_layout(xaxis_rangeslider_visible=False)
+    st.plotly_chart(fig)
 
 if __name__ == '__main__':
     main()
