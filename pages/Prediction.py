@@ -13,7 +13,9 @@ def build_model(data):
     return model
 
 def main():
-    st.header(st.session_state['tickerSymbol'])
+    st.sidebar.title("Stock Market Predictor")
+
+    st.header(st.session_state['tickerName'])
     raw_data = st.session_state['data']
 
     n_steps = st.number_input('No. of days to predict')

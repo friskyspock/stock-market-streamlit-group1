@@ -1,6 +1,7 @@
 import streamlit as st
 st.set_page_config(layout="wide")
 import pandas as pd
+import numpy as np
 import yfinance as yf
 import plotly.graph_objects as go
 import plotly.express as px
@@ -17,9 +18,17 @@ def main():
 
     option = st.selectbox('Choose a ticker',ticker_list['ticker'])
     if option:
-        st.header(option)
-        st.session_state['tickerSymbol'] = option
+        tickerName = ticker_list[ticker_list['ticker']==option]['company'].values[0]
         raw_data = download_data(option)
+
+        change = raw_data['Close'][-1]-raw_data['Close'][-2]
+        percent = " ("+format(abs(change*100/raw_data['Close'][-2]),'.2f')+"%)"
+        color = 'Red' if change < 0 else 'Green'
+        arrow = "<span style='font-size: 20px; color: Red'>  &#9660;</span>" if change < 0 else "<span style='font-size: 20px; color: Green'>  &#9650;</span>"
+        info = "</br><p style='font-size: 20px; line-height: 0.2'>"+tickerName+"</p>"+"<b style='font-size: 50px; line-height: 0.7'>"+format(raw_data['Close'][-1],'.2f')+arrow+"</b><span style='font-size: 25px; color:"+color+"'>"+format(change,'.2f')+percent+"</span>"
+        st.markdown(info,unsafe_allow_html=True)
+
+        st.session_state['tickerName'] = tickerName
         st.session_state['data'] = raw_data
 
     fig = go.Figure(data=[go.Candlestick(x=raw_data.index,
@@ -56,6 +65,7 @@ def main():
             }
             ))
         st.plotly_chart(fig)
+
 
 if __name__ == '__main__':
     main()
