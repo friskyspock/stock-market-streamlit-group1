@@ -5,34 +5,11 @@ import plotly.graph_objects as go
 
 from prophet import Prophet
 
-<<<<<<< HEAD
-st.markdown("# Page 2 ")
-st.sidebar.markdown("# Page 2 ")
-
-
-
-# downloading data
-start_date = '2013-01-01'
-raw_data = yf.download(tickers=st.session_state.option,start=start_date,period='1d')
-
-
-data = pd.DataFrame()
-data['ds'] = raw_data.index
-data['y'] = raw_data['Close'].values
-
-st.text_input("No. of days to predict", key="days")
-
-
-
-if st.button('train model'):
-=======
 @st.cache_resource
-def build_model():
-    raw_data = st.session_state['data']
+def build_model(data):
     df = pd.DataFrame()
-    df['ds'] = raw_data.index
-    df['y'] = raw_data['Close'].values
->>>>>>> 9125eb83bab8977b8e47db994d03081d2eea212e
+    df['ds'] = data.index
+    df['y'] = data['Close'].values
     model = Prophet(weekly_seasonality=False)
     model.fit(df)
     return model
@@ -42,16 +19,21 @@ def main():
     st.sidebar.markdown("# Page 2 ")
 
     st.write(st.session_state['tickerName'])
-    
-    st.text_input("No. of days to predict", key="days")
+    raw_data = st.session_state['data']
+
+    n_steps = st.number_input('No. of days to predict')
 
     if st.button('train model'):
-        future = build_model().make_future_dataframe(periods=int(st.session_state.days))
+        model = build_model()
+        future = model.make_future_dataframe(periods=n_steps)
         forecast = model.predict(future)
 
-        fig = go.Figure()
-        fig.add_trace(go.Scatter(x=forecast['ds'][:-int(st.session_state.days)],y=forecast['yhat'][:-int(st.session_state.days)]))
-        fig.add_trace(go.Scatter(x=forecast['ds'][-int(st.session_state.days):],y=forecast['yhat'][-int(st.session_state.days):]))
+        fig = go.Figure(data=[go.Candlestick(x=raw_data.index,
+                                     close=raw_data['Close'],
+                                     open=raw_data['Open'],
+                                     high=raw_data['High'],
+                                     low=raw_data['Low'])])
+        fig.update_layout(xaxis_rangeslider_visible=False)
         st.plotly_chart(fig)
 
 
