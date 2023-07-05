@@ -5,11 +5,22 @@ import numpy as np
 import yfinance as yf
 import plotly.graph_objects as go
 import plotly.express as px
+from bs4 import BeautifulSoup
+import requests
 
 @st.cache_data
 def download_data(tickerSymbol):
     raw_data = yf.download(tickers=tickerSymbol,start='2013-01-01')
     return raw_data
+
+def fetch_news():
+    url = "https://www.moneycontrol.com/rss/MCtopnews.xml"
+    response = requests.get(url)
+    soup = BeautifulSoup(response.content, features='xml')
+    titles = []
+    for item in soup.find_all('item'):
+        titles.append(item.find('title').get_text())
+    return titles
 
 def main():
     st.sidebar.title("Stock Market Predictor")
@@ -66,6 +77,10 @@ def main():
             ))
         st.plotly_chart(fig)
 
+    news = fetch_news()
+    with st.expander("Expand for latest news"):
+        for title in news:
+            st.markdown("* "+title)
 
 if __name__ == '__main__':
     main()
