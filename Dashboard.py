@@ -14,8 +14,7 @@ def download_data(tickerSymbol):
     return raw_data
 
 def main():
-    st.markdown("# Main page 🎈")
-    st.sidebar.markdown("# Main page 🎈")
+    st.markdown("# Stock Market Predictor")
 
     ticker_list = pd.read_csv('TickersList.csv',names=['ticker','company'], header=None)
 
