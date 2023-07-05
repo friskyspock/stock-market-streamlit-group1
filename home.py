@@ -8,29 +8,25 @@ import datetime as dt
 import plotly.graph_objects as go
 from prophet import Prophet
 
-
+@st.cache_data
+def download_data(tickerSymbol):
+    raw_data = yf.download(tickers=tickerSymbol,start='2013-01-01')
+    return raw_data
 
 def main():
     st.markdown("# Main page 🎈")
     st.sidebar.markdown("# Main page 🎈")
 
-    company_ticker = pd.read_csv('TickersList.csv',names=['ticker','company'], header=None)
-    option = st.selectbox('Choose your company',company_ticker['ticker'])
+    ticker_list = pd.read_csv('TickersList.csv',names=['ticker','company'], header=None)
+
+    option = st.selectbox('Choose your company',ticker_list['ticker'])
     if option:
         st.write('You selected: ', option)    
-        st.session_state['tickerName'] = option
+        st.session_state['tickerSymbol'] = option
+        st.session_state['data'] = download_data(option)
 
-    raw_data = yf.download(tickers="RELIANCE.NS",start='2013-01-01')
-    st.session_state['data'] = raw_data
-
-    st.write(st.session_state)
-
-
-    # if st.checkbox('Show dataframe'):
-    #     display_data = load_data().head()
-    #     display_data
-
-
+    if st.checkbox('Show dataframe'):
+        st.write(download_data.head())
 
 if __name__ == '__main__':
     main()
