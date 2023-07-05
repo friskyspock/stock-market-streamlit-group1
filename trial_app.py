@@ -25,6 +25,8 @@ from prophet import Prophet
 st.markdown("# Main page 🎈")
 st.sidebar.markdown("# Main page 🎈")
 
+
+
 # list of options to select
 company_ticker = pd.read_csv('TickersList.csv',names=['ticker','company'], header=None)
 option = st.selectbox(
@@ -36,8 +38,12 @@ option = st.selectbox(
 # downloading data
 start_date = '2013-01-01'
 raw_data = yf.download(tickers=option,start=start_date,period='1d')
+
+    
+
 # use checkbox to show/hide data
 if st.checkbox('Show dataframe'):
     raw_data = raw_data.head()
     raw_data
+
 

@@ -24,7 +24,7 @@ st.sidebar.markdown("# Page 2 ")
 
 # downloading data
 start_date = '2013-01-01'
-raw_data = yf.download(tickers=option,start=start_date,period='1d')
+raw_data = yf.download(tickers=st.session_state.option,start=start_date,period='1d')
 
 
 data = pd.DataFrame()
