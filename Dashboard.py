@@ -8,7 +8,6 @@ import plotly.express as px
 from bs4 import BeautifulSoup
 import requests
 
-@st.cache_data
 def download_data(tickerSymbol):
     raw_data = yf.download(tickers=tickerSymbol,start='2013-01-01')
     return raw_data
